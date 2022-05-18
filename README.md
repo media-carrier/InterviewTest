@@ -4,7 +4,7 @@ Pair programming and Refactoring.
 
 Description:
   1. Clone the repository
-  2. Create a local branch with name interview/<interviewee last name>
+  2. Create a local branch with name interview/[interviewee last name]
   3. Refactor the application according to your opinion of high quality code, 
       e.g. SOLID, Clean Code, 12factors, Clean Architecture, Best Practicies, etc.
   4. Commit and push changes to the repository. Create a pull request. 
