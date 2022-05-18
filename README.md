@@ -8,7 +8,8 @@ Description:
   3. Refactor the application according to your opinion of high quality code, 
       e.g. SOLID, Clean Code, 12factors, Clean Architecture, Best Practicies, etc.
   4. Commit and push changes to the repository. Create a pull request. 
-  5. PROFIT!!!
+  5. ...
+  6. PROFIT!!!
   
 Notes:
   - You can communicate and describe benefits of changes which you are doing. 
