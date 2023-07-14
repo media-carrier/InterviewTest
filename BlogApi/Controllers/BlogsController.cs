@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Data.SqlClient;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,6 +12,12 @@ namespace BlogApi.Controllers
     public class BlogsController : ControllerBase
     {
         private string connectionString = "Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=blogs-dev;Trusted_Connection=True;";
+        private readonly AppContext appContext;
+
+        public BlogsController(AppContext appContext)
+        {
+            this.appContext = appContext;
+        }
 
         // GET: api/<BlogsController>
         [HttpGet]
@@ -23,7 +31,7 @@ namespace BlogApi.Controllers
             var result = new List<object>();
             while (reader.Read())
             {
-                result.Add(new { id = reader["Id"], userId = reader["UserId"], text = reader["Text"] });
+                result.Add(new { id = reader["Id"], userId = reader["UserId"], text = reader["Text"], views = reader["Views"] });
             }
 
             return Ok(result);
@@ -50,7 +58,13 @@ namespace BlogApi.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] Blog value)
         {
-            CheckUser(HttpContext);
+            var userResult = CheckUser(HttpContext) switch
+            {
+                (true, null) => "",
+                (bool, string) r when r.message.Contains("Login does not exist") => throw new Exception(r.message),
+                _ => throw new NotImplementedException(),
+            };
+
             var queryString = $"insert into Blogs (Id, UserId, Text) values ({value.Id}, {value.UserId}, '{value.Text}')";
             var connection = new SqlConnection(connectionString);
             var command = new SqlCommand(queryString, connection);
@@ -68,7 +82,16 @@ namespace BlogApi.Controllers
             var connection = new SqlConnection(connectionString);
             var command = new SqlCommand(queryString, connection);
             connection.Open();
-            command.ExecuteNonQuery();
+
+            try
+            {
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex) when (ex.Message.Contains("Id does not exist")) 
+            {
+                return NotFound();
+            }
+
             return Ok();
         }
 
@@ -85,7 +108,7 @@ namespace BlogApi.Controllers
             return Ok();
         }
 
-        private void CheckUser(HttpContext httpContext)
+        private (bool result, string? message) CheckUser(HttpContext httpContext)
         {
             var login = httpContext.Request.Headers["login"].First();
             var password = httpContext.Request.Headers["password"].First();
@@ -97,13 +120,20 @@ namespace BlogApi.Controllers
             var reader = command.ExecuteReaderAsync().Result;
             while (reader.Read())
             {
-                if ((string)reader["Password"] == password)
+                if ((string)reader["Login"] is null or "")
                 {
-                    return;
+                    return (false, "Login does not exist");
                 }
+
+                if ((string)reader["Password"] != password)
+                {
+                    return (false, "Incorrect password");
+                }
+
+                return (true, null);
             }
 
-            throw new Exception();
+            return (false, "Unknown state");
         }
     }
 
