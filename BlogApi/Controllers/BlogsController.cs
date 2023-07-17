@@ -13,6 +13,7 @@ namespace BlogApi.Controllers
     {
         private string connectionString = "Data Source=(LocalDb)\\MSSQLLocalDB;Initial Catalog=blogs-dev;Trusted_Connection=True;";
         private readonly AppContext appContext;
+        private Cache cache;
 
         public BlogsController(AppContext appContext)
         {
@@ -23,6 +24,11 @@ namespace BlogApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<object>> Get()
         {
+            if (cache is not null && cache.DateTime < DateTime.UtcNow.AddMinutes(0.5))
+            {
+                return Ok(cache.Blogs);
+            }
+
             var queryString = @"select * from Blogs";
             var connection = new SqlConnection(connectionString);
             var command = new SqlCommand(queryString, connection);
@@ -138,4 +144,6 @@ namespace BlogApi.Controllers
     }
 
     public record Blog(int Id, int UserId, string Text);
+
+    public record Cache(DateTime DateTime, List<Blog> Blogs);
 }
