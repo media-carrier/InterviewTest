@@ -13,8 +13,8 @@ Description:
   
 Notes:
   - You can communicate and describe benefits of changes which you are doing. 
-  - You can focus on one methods or all the whole application. 
+  - You can focus on one method or all the whole application. 
   - Create any projects, classes, interfaces, structs, records, methods, tests which help you with refactoring.
   - Apply any patterns which you think fit the best. 
-  - Use any nuget packages and documentations which are required to fullfil the task. 
+  - Use any nuget packages and documentations (Internet as well) which are required to fullfil the task. 
   - If you see that some part of refactoring could take too much time, you can add comments how the code could be refactored. 
