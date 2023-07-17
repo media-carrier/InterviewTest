@@ -5,11 +5,12 @@ Pair programming and Refactoring.
 Description:
   1. Clone the repository
   2. Create a local branch with name interview/[interviewee last name]
-  3. Refactor the application according to your opinion of high quality code, 
+  3. Read the source code and discuss issues which you noticed
+  4. Refactor the application according to your opinion of high quality code, 
       e.g. SOLID, Clean Code, 12factors, Clean Architecture, Best Practicies, etc.
-  4. Commit and push changes to the repository. Create a pull request. 
-  5. ...
-  6. PROFIT!!!
+  5. Commit and push changes to the repository. Create a pull request
+  6. ...
+  7. PROFIT!!!
   
 Notes:
   - You can communicate and describe benefits of changes which you are doing. 
